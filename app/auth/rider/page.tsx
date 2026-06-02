@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import img from "@/public/Auth-img.jpg";
 import Image from "next/image";
 import { useState } from "react";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
@@ -46,15 +46,15 @@ export default function Page() {
       });
       const newRes = await res.json();
       if (newRes?.status === 201) {
-        toast.success("Account created successfully!.", { autoClose: 3000 });
+        // toast.success("Account created successfully!.", { autoClose: 3000 });
         router.push("/auth/success");
         return setLoading(false);
       }
       if (newRes?.success === false) {
-        toast.error(
-          newRes?.message || "Something went wrong. Please try again.",
-          { autoClose: 3000 },
-        );
+        // toast.error(
+        //   newRes?.message || "Something went wrong. Please try again.",
+        //   { autoClose: 3000 },
+        // );
         return setLoading(false);
       }
       console.log(newRes);

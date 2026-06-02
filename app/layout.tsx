@@ -40,10 +40,10 @@ const creato_display = localFont({
 });
 export const metadata: Metadata = {
   title: {
-    default: siteConfig.name,
-    template: `%s - ${siteConfig.name}`,
+    default: "BAMJIYE",
+    template: `%s - ${`BAMJIYE`}`,
   },
-  description: siteConfig.description,
+  description: "Your best transport companion",
   icons: {
     icon: "/favicon.ico",
   },

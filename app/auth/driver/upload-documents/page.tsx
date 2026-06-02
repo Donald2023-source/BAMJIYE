@@ -3,7 +3,7 @@
 import Image from "next/image";
 import img from "@/public/driver auth-img.png";
 import { useState, useEffect } from "react";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 export default function Page() {
   const [loading, setLoading] = useState(false);
@@ -62,7 +62,7 @@ export default function Page() {
       console.log(data);
 
       if (data.success) {
-        toast.success("Documents uploaded successfully");
+        // toast.success("Documents uploaded successfully");
         router.push("/auth/success");
       }
     } catch (err) {
