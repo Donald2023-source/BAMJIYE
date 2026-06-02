@@ -4,6 +4,7 @@ import img from "@/public/success-icon.png";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 export default function Page() {
   const [isDriver, setIsDriver] = useState<string | null>(null);
 
@@ -35,9 +36,12 @@ export default function Page() {
             : "Your account has been created successfully. You can now start booking rides easily and safely."}
         </p>
 
-        <button className="p-4 cursor-pointer text-sm md:text-base w-full rounded-full bg-primary text-white">
+        <Link
+          href={isDriver === "true" ? "/driver/dashboard" : "https://wa.me/2347088392115?text=%E2%80%8E%20Hi%20Bamjiye"}
+          className="p-4 cursor-pointer text-sm text-center md:text-base w-full rounded-full bg-primary text-white"
+        >
           {isDriver === "true" ? "Start Driving" : "Book a Ride"}
-        </button>
+        </Link>
       </div>
     </div>
   );

@@ -4,7 +4,9 @@ import Image from "next/image";
 import img from "@/public/driver auth-img.png";
 import { useState, useEffect } from "react";
 // import { toast } from "react-toastify";
+import axiosInstance from "@/config/axiosInstance";
 import { useRouter } from "next/navigation";
+import { toast } from "@heroui/react";
 export default function Page() {
   const [loading, setLoading] = useState(false);
   const [driver, setDriver] = useState("");
@@ -13,11 +15,11 @@ export default function Page() {
   const router = useRouter();
   useEffect(() => {
     const userId = localStorage.getItem("driverId");
-   if(userId) {
-     setDriver(userId);
-   } else {
-    router.push("/auth/driver")
-   }
+    if (userId) {
+      setDriver(userId);
+    } else {
+      router.push("/auth/driver");
+    }
   }, []);
 
   console.log(driver);
@@ -52,17 +54,20 @@ export default function Page() {
         profilePhoto,
       });
 
-      const response = await fetch("/api/auth/upload-documents", {
-        method: "PATCH",
-        body: formData,
-      });
+      const response = await axiosInstance.patch(
+        "/api/auth/upload-documents",
+        formData,
+      );
 
-      const data = await response.json();
+      const data = await response.data;
 
       console.log(data);
 
-      if (data.success) {
+      if (data.status === 200) {
         // toast.success("Documents uploaded successfully");
+        toast.success("Files uploaded Successfully!", {
+          description: "Weldone! 🎉",
+        });
         router.push("/auth/success");
       }
     } catch (err) {
