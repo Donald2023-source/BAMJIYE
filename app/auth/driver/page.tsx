@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 
 import { Button, toast } from "@heroui/react";
 import { PersonStanding } from "lucide-react";
+import axiosInstance from "@/config/axiosInstance";
 
 const formSchema = z.object({
   fullName: z.string().min(2),
@@ -43,29 +44,30 @@ export default function Page() {
     console.log(data);
     try {
       setLoading(true);
-      const res = await fetch("/api/auth/driver", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+      const res = await axiosInstance.post("/api/auth/driver", data);
 
-      const driver = await res.json();
+      const driver = await res.data;
       console.log(driver);
-      if (driver?.status === 201) {
-        // toast.success("New Driver account created successfully!.", {
-        //   autoClose: 3000,
-        // });
+      if (res?.status === 200) {
+        toast.success("Registeration Successful!", {
+          description: "Welcome to  Bamjiye! 🎉",
+        });
 
         localStorage.setItem("driverId", driver?.user?.id);
         router.push("/auth/driver/upload-documents");
         console.log(driver);
-        return setLoading(false);
+        return setLoading(true);
       }
-    } catch (error) {
-      console.error("Error creating driver account:", error);
-      // toast.error("Failed to create driver account. Please try again.");
+      console.log(driver?.message);
+    } catch (error: any | unknown) {
+      console.log(
+        "Error creating driver account:",
+        error?.response?.data?.message,
+      );
+
+      toast.danger("Registration Failed!", {
+        description: "Please try again.",
+      });
       setLoading(false);
     } finally {
       setLoading(false);
@@ -84,19 +86,6 @@ export default function Page() {
                 Create Your <br />
                 <i className="text-secondary">BAMJIYE</i> Account
               </h4>
-
-              <Button
-                size="sm"
-                variant="secondary"
-                onPress={() =>
-                  toast.info("You have 2 credits left", {
-                    actionProps: { children: "Upgrade", onPress: noop },
-                    description: "Get a paid plan for more credits",
-                  })
-                }
-              >
-                Accent toast
-              </Button>
 
               <p className="text-sm text-black/60 mt-2">
                 Start earning with Bamjiye. Sign up in minutes and get ride
