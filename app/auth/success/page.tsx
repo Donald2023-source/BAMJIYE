@@ -14,7 +14,6 @@ export default function Page() {
   }, []);
 
   setTimeout(() => {
-    router.push("/");
     localStorage.removeItem("isDriver");
     localStorage.removeItem("driverId");
   }, 2000);

@@ -8,6 +8,8 @@ import Image from "next/image";
 import { useState } from "react";
 // import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { Toast, Button, toast } from "@heroui/react";
+import axiosInstance from "@/config/axiosInstance";
 
 const formSchema = z.object({
   firstName: z.string().min(2),
@@ -24,7 +26,6 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-
 export default function Page() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -40,26 +41,28 @@ export default function Page() {
     console.log(data);
     setLoading(true);
     try {
-      const res = await fetch("https://bamjiye-agent-production.up.railway.app/api/auth/rider", {
-        method: "POST",
-        body: JSON.stringify(data),
-      });
-      const newRes = await res.json();
-      if (newRes?.status === 201) {
-        // toast.success("Account created successfully!.", { autoClose: 3000 });
+      const res = await axiosInstance.post("/api/auth/rider", data);
+      const newRes = await res?.data;
+      if (res?.status === 200) {
+        toast.success("Registeration Successful!", {
+          description: "Welcome to  Bamjiye! 🎉",
+        });
+
+        setLoading(true);
         router.push("/auth/success");
-        return setLoading(false);
       }
-      if (newRes?.success === false) {
-        // toast.error(
-        //   newRes?.message || "Something went wrong. Please try again.",
-        //   { autoClose: 3000 },
-        // );
+      if (res?.status !== 200) {
+        toast.danger("Registration Failed!", {
+          description: newRes?.message || "Please try again.",
+        });
+
+        console.log(newRes?.message);
+
         return setLoading(false);
       }
       console.log(newRes);
-    } catch (err) {
-      console.error(err, "Something went wrong");
+    } catch (err: any | unknown) {
+      console.error(err?.response?.data?.message, "Something went wrong");
       setLoading(false);
     } finally {
       setLoading(false);

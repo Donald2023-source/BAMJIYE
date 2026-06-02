@@ -9,6 +9,7 @@ import { fontSans } from "@/config/fonts";
 import { Navbar } from "@/components/navbar";
 import localFont from "next/font/local";
 import NextTopLoader from "nextjs-toploader";
+import { Toast } from "@heroui/react";
 const creato_display = localFont({
   src: [
     {
@@ -59,6 +60,7 @@ export default function RootLayout({
       <head />
       <body className={`${creato_display.className} antialiased`}>
         <Providers themeProps={{ attribute: "class", defaultTheme: "light" }}>
+          <Toast.Provider placement="top end" />
           <body>
             {children}
 
