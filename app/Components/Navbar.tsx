@@ -35,13 +35,13 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="max-w-7xl md:px-0 px-3 m-auto my-5 py-2 relative z-50">
+    <nav className="max-w-7xl md:px-6 px-3 m-auto my-5 py-2 relative z-50">
       <div className="flex items-center justify-between h-10">
         <Link href={"/"} className="flex h-20 items-center gap-2">
           <Image className="h-12 md:w-28 w-24" src={logo} alt="logo" />
         </Link>
 
-        <div className="hidden md:flex items-center lg:gap-12 gap-5 font-sans">
+        <div className="hidden lg:flex items-center lg:gap-12 gap-5 font-sans">
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -63,7 +63,7 @@ const Navbar = () => {
 
         <button
           onClick={() => setNav(true)}
-          className="md:hidden border p-2 rounded-xl border-gray-300 cursor-pointer hover:scale-95 transition"
+          className="md:block lg:hidden sm:hidden border p-2 rounded-xl border-gray-300 cursor-pointer hover:scale-95 transition"
         >
           <MenuIcon className="text-gray-700" />
         </button>
@@ -76,7 +76,7 @@ const Navbar = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={() => setNav(false)}
-                className="fixed inset-0 bg-black/40 md:hidden"
+                className="fixed inset-0 bg-black/40 md:block sm:h-hidden lg:hidden"
               />
 
               <motion.div
@@ -84,7 +84,7 @@ const Navbar = () => {
                 animate={{ x: 0 }}
                 exit={{ x: "100%" }}
                 transition={{ duration: 0.4, ease: "easeInOut" }}
-                className="fixed top-0 right-0 h-screen w-[80%] backdrop-blur-2xl bg-white/70 shadow-2xl md:hidden flex flex-col items-center justify-center gap-10 z-50"
+                className="fixed top-0 right-0 h-screen w-[80%] backdrop-blur-2xl bg-white/70 shadow-2xl lg:hidden  flex flex-col items-center justify-center gap-10 z-50"
               >
                 <button
                   onClick={() => setNav(false)}
