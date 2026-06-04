@@ -9,18 +9,18 @@ const MotionImage = motion.create(Image);
 export default function Hero() {
   return (
     <div className="bg-[#FFB7001A] h-full">
-      <div className="sm:w-[85%]  px-4 md:py-8 flex md:flex-row flex-col items-center justify-between m-auto">
+      <div className="max-w-7xl md:px-6  lg:px-4 md:py-8 flex md:flex-row flex-col items-center justify-between m-auto">
         <motion.div
           initial={{ opacity: 0.5, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1 }}
           className="lg:w-[60%] xl:w-[60%] md:w-[90%] w-full flex  flex-col gap-8 py-8"
         >
-          <h3 className="lg:text-6xl md:text-2xl text-4xl md:text-start text-center text-primary leading-11 sm:leading-20 font-extrabold">
+          <h3 className="lg:text-6xl md:text-4xl text-4xl md:text-start text-center text-primary lg:leading-20 md:leading-11 sm:leading-20 font-extrabold">
             Your Short distance <br /> rides,{" "}
             <i className="text-secondary">Sorted</i>
           </h3>
-          <p className="md:leading-9 md:w-[70%] leading-9 text-base text-black/50 md:text-xl md:px-0 px-2 md:text-start text-center">
+          <p className="md:leading-10 md:text-sm lg:text-base md:w-[70%] leading-9 text-base text-black/50 md:text-xl md:px-0 px-2 md:text-start text-center">
             Affordable tricycle rides (keke) for{" "}
             <strong>short distances</strong>, booked on
             <strong> Whatsapp</strong> in seconds. No app download. No surge
