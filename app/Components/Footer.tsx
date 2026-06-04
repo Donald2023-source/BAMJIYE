@@ -30,9 +30,9 @@ export default function Footer() {
         <div className="text-center">
           <p className="font-medium text-white/60">CONNECT</p>
           <ul className="flex flex-col gap-3 mt-1">
-            <Link href={"https://instagram.com"}>Instagram</Link>
-            <Link href={"www.x.com"}>Twitter / X</Link>
-            <Link href={"https://tiktok.com"}>Tiktok</Link>
+            <Link href={"https://www.instagram.com/Bamjiye"}>Instagram</Link>
+            <Link href={"https://x.com/BamjiyeTS"}>Twitter / X</Link>
+            <Link href={"https://m.facebook.com/61573531319773/"}>Facebook</Link>
           </ul>
         </div>
       </div>
