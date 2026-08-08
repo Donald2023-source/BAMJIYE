@@ -201,12 +201,6 @@ export default function DriverMapPage() {
     lng: ride.dropoff.location.coordinates[0],
   };
 
-  /*
-   * Map center
-   *
-   * Use driver location if available,
-   * otherwise pickup.
-   */
   const mapCenter = driverLocation ?? pickup;
 
   return (
