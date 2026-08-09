@@ -1,0 +1,351 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
+import { APIProvider, AdvancedMarker, Map } from "@vis.gl/react-google-maps";
+
+import { useParams } from "next/navigation";
+
+import { socket } from "@/lib/socket";
+
+import DriverRoute from "@/app/Components/DriverRoute";
+
+interface Location {
+  lat: number;
+  lng: number;
+}
+
+interface Ride {
+  _id: string;
+
+  pickup: {
+    location: {
+      coordinates: [number, number];
+    };
+  };
+
+  dropoff: {
+    location: {
+      coordinates: [number, number];
+    };
+  };
+}
+
+export default function DriverMapPage() {
+  const params = useParams();
+
+  const driverId = params.id as string;
+
+  const [ride, setRide] = useState<Ride | null>(null);
+
+  const [driverLocation, setDriverLocation] = useState<Location | null>(null);
+
+  const [loading, setLoading] = useState(true);
+
+  /*
+   * Get driver's active ride
+   */
+  useEffect(() => {
+    if (!driverId) return;
+
+    const getActiveRide = async () => {
+      try {
+        setLoading(true);
+
+        const url =
+          `${process.env.NEXT_PUBLIC_API_URL}` +
+          `/api/drivers/${driverId}/active-ride`;
+
+        console.log("Getting active ride:", url);
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch active ride");
+        }
+
+        const data = await response.json();
+
+        console.log("Active ride:", data);
+
+        if (data.ride) {
+          setRide(data.ride);
+        } else {
+          setRide(null);
+        }
+      } catch (error) {
+        console.error("Failed to get active ride:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getActiveRide();
+  }, [driverId]);
+
+  /*
+   * Track driver's GPS
+   */
+  // Track driver's GPS
+  useEffect(() => {
+    if (!ride?._id || !driverId) return;
+
+    if (!navigator.geolocation) {
+      console.error("Geolocation is not supported");
+      return;
+    }
+
+    console.log("🚗 Starting GPS tracking...");
+
+    const watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        const accuracy = position.coords.accuracy;
+
+        console.log("🚗 DRIVER LOCATION:", {
+          lat,
+          lng,
+          accuracy,
+        });
+
+        // Update marker on the map
+        setDriverLocation({
+          lat,
+          lng,
+        });
+
+        // Send location to your backend
+        socket.emit("driver:location", {
+          driverId,
+          rideId: ride._id,
+          lat,
+          lng,
+          accuracy,
+        });
+      },
+
+      (error) => {
+        console.error("❌ GPS error:", error);
+      },
+
+      {
+        enableHighAccuracy: true,
+        maximumAge: 3000,
+        timeout: 10000,
+      },
+    );
+
+    // Stop watching GPS when page is closed/unmounted
+    return () => {
+      console.log("🛑 Stopping GPS tracking");
+
+      navigator.geolocation.clearWatch(watchId);
+    };
+  }, [ride?._id, driverId]);
+
+  /*
+   * Loading
+   */
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <p>Loading map...</p>
+      </div>
+    );
+  }
+
+  /*
+   * No active ride
+   */
+  if (!ride) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold">No active ride</h2>
+
+          <p className="mt-2 text-gray-500">
+            Accept a ride through WhatsApp to start tracking.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  /*
+   * GeoJSON coordinates are:
+   *
+   * [lng, lat]
+   *
+   * Google Maps expects:
+   *
+   * { lat, lng }
+   */
+
+  const pickup: Location = {
+    lat: ride.pickup.location.coordinates[1],
+
+    lng: ride.pickup.location.coordinates[0],
+  };
+
+  const dropoff: Location = {
+    lat: ride.dropoff.location.coordinates[1],
+
+    lng: ride.dropoff.location.coordinates[0],
+  };
+
+  const mapCenter = driverLocation ?? pickup;
+
+  return (
+    <div className="relative h-screen w-full">
+      <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
+        <Map
+          mapId={process.env.NEXT_PUBLIC_GOOGLE_MAP_ID}
+          style={{
+            width: "100%",
+            height: "100%",
+          }}
+          defaultCenter={mapCenter}
+          defaultZoom={15}
+          gestureHandling="greedy"
+          disableDefaultUI
+        >
+          {/* PICKUP */}
+
+          <AdvancedMarker position={pickup}>
+            <div className="text-3xl">📍</div>
+          </AdvancedMarker>
+
+          {/* DROPOFF */}
+
+          <AdvancedMarker position={dropoff}>
+            <div className="text-3xl">🏁</div>
+          </AdvancedMarker>
+
+          {/* DRIVER */}
+
+          {driverLocation && <DriverMarker position={driverLocation} />}
+
+          {/* ROUTE */}
+
+          {driverLocation && (
+            <DriverRoute origin={driverLocation} destination={pickup} />
+          )}
+        </Map>
+      </APIProvider>
+
+      {/* Ride information */}
+
+      <div className="absolute left-4 right-4 top-4 rounded-2xl bg-white p-4 shadow-lg">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm text-gray-500">Current ride</p>
+
+            <p className="font-semibold">Ride #{ride._id.slice(-6)}</p>
+          </div>
+
+          <div className="rounded-full bg-green-100 px-3 py-1 text-sm text-green-700">
+            Active
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+
+
+
+{
+    "success": true,
+    "ride": {
+        "pickup": {
+            "location": {
+                "type": "Point",
+                "coordinates": [
+                    8.9609459,
+                    9.8770886
+                ]
+            },
+            "latitude": 9.8770886,
+            "longitude": 8.9609459,
+            "name": "VXG6+R9 Katon Rikkos, Nigeria"
+        },
+        "dropoff": {
+            "location": {
+                "type": "Point",
+                "coordinates": [
+                    8.9320121705532,
+                    9.9061038977309
+                ]
+            },
+            "latitude": 9.9061038977309,
+            "longitude": 8.9320121705532,
+            "name": "WW3J+FMH, Jos 930105, Plateau, Nigeria"
+        },
+        "_id": "6a771d6c748623439cf03884",
+        "initiatedBy": {
+            "_id": "6a0cfc13b5be7a24a8afae09",
+            "firstName": "donald",
+            "lastName": "yusuf",
+            "email": "donalddyusuf@gmail.com",
+            "role": "rider",
+            "userStep": "ongoing_ride",
+            "phone": "2348140381704",
+            "city": "Jos",
+            "__v": 0,
+            "registered": true,
+            "updatedAt": "2026-08-08T12:14:01.896Z",
+            "currentRide": "6a771d6c748623439cf03884"
+        },
+        "candidateDrivers": [
+            "6a0b836710d9564fbeaec7c5"
+        ],
+        "isScheduled": false,
+        "status": "accepted",
+        "dispatchIndex": 0,
+        "createdAt": "2026-08-08T12:13:32.277Z",
+        "updatedAt": "2026-08-08T12:14:08.680Z",
+        "__v": 1,
+        "code": "BMJ-3479",
+        "distance": "8.949",
+        "offerExpiresAt": null,
+        "price": "2260",
+        "currentDriver": "6a0b836710d9564fbeaec7c5",
+        "acceptedDriver": {
+            "currentLocation": {
+                "location": {
+                    "type": "Point",
+                    "coordinates": [
+                        8.9609259,
+                        9.8770795
+                    ]
+                },
+                "latitude": 9.8770795,
+                "longitude": 8.9609259,
+                "name": ""
+            },
+            "currentRide": null,
+            "_id": "6a0b836710d9564fbeaec7c5",
+            "fullName": "donald yusuf",
+            "email": "pr523571@gmail.com",
+            "phone": "2349112839851",
+            "city_of_operation": "Abuja",
+            "drivers_license_number": "18222222222",
+            "plate_number": "100332212321",
+            "nin_photo": "https://res.cloudinary.com/douclx0ca/image/upload/v1779552553/BAMJIYE/drivers/6a0b836710d9564fbeaec7c5/uuqaaijmdzu1ei40feao.jpg",
+            "profile_photo": "https://res.cloudinary.com/douclx0ca/image/upload/v1779552495/BAMJIYE/drivers/6a0b836710d9564fbeaec7c5/emmysrbw1nkztdizscj4.png",
+            "online": "online",
+            "role": "driver",
+            "createdAt": "2026-05-18T21:23:51.138Z",
+            "updatedAt": "2026-08-08T12:14:08.674Z",
+            "__v": 3,
+            "userState": "ride_in_progress",
+            "driverStatus": "busy",
+            "isOnline": true,
+            "isVerified": false,
+            "locationExpiresAt": "2026-08-08T12:38:23.666Z"
+        }
+    }
+}
