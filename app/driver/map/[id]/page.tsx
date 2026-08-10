@@ -20,6 +20,8 @@ import { Switch } from "@/app/Components/ui/Switch";
 import SwitchRideState from "@/app/Components/SwitchRideState";
 import { Button } from "@heroui/react";
 import Link from "next/link";
+import { Ride } from "@/types";
+import RideDetails from "@/app/Components/RideDetails";
 
 interface Location {
   lat: number;
@@ -27,30 +29,7 @@ interface Location {
   accuracy?: number;
 }
 
-interface Ride {
-  _id: string;
-  initiatedBy: {
-    firstName: string;
-    lastName: string;
-    phone: string;
-  };
-  price: string;
-  pickup: {
-    name: string;
-    location: {
-      coordinates: [number, number];
-    };
-  };
 
-  distance: string;
-
-  dropoff: {
-    name: string;
-    location: {
-      coordinates: [number, number];
-    };
-  };
-}
 
 const containerStyle = {
   width: "100%",
@@ -67,7 +46,7 @@ export default function DriverMapPage() {
   const [driverLocation, setDriverLocation] = useState<Location | null>(null);
   const [loading, setLoading] = useState(true);
   const [map, setMap] = useState<google.maps.Map | null>(null);
-
+  const [rideStatus, setRideStatus] = useState<string | null>(null);
   const [directions, setDirections] =
     useState<google.maps.DirectionsResult | null>(null);
 
@@ -327,8 +306,10 @@ export default function DriverMapPage() {
   const mapCenter = pickup;
 
   const handleStatusChange = (checked: boolean, id: string) => {
-    setChecked(checked);
-    console.log(id, checked);
+    if (checked) {
+      setRideStatus(id);
+      console.log("status changed", id);
+    }
   };
   return (
     <div className="relative h-screen w-full">
@@ -382,89 +363,7 @@ export default function DriverMapPage() {
         {driverLocation && <MarkerF position={driverLocation} label="🚗" />}
       </GoogleMap>
 
-      <div className="absolute left-0 h-[60vh] w-full right-0 bottom-0 rounded-t-2xl bg-primary py-3 px-6 shadow-lg">
-        <div className="h-2 hover:cursor-pointer bg-white w-13 rounded-full mx-auto" />
-        <div className="flex items-center gap-4">
-          <span className="bg-secondary/20 p-3 flex w-fit rounded-full">
-            <MapPin size={28} color="#ffb700" />
-          </span>
-          <span>
-            <p className="text-gray-400 text-sm font-medium">Pickup At</p>
-            <p className="text-white font-semibold py-1">
-              {ride?.pickup?.name}
-            </p>
-          </span>
-        </div>
-        <hr className="mx-2 border-gray-500 my-5" />
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <span className="bg-secondary p-3 flex w-fit rounded-full">
-              <strong>
-                {ride.initiatedBy?.firstName[0].toUpperCase() +
-                  ride.initiatedBy?.lastName[0].toUpperCase()}
-              </strong>
-            </span>
-            <span>
-              <p className="text-white font-semibold py-1 ">
-                {ride.initiatedBy.firstName[0].toUpperCase() +
-                  ride.initiatedBy.firstName.slice(1, 6) +
-                  " " +
-                  ride.initiatedBy.lastName[0].toUpperCase() +
-                  ride.initiatedBy.lastName.slice(1, 6)}
-              </p>
-              <p className="text-gray-400 text-sm font-medium">
-                Passenger - {Number(ride.distance).toFixed(1)} km
-              </p>
-            </span>
-          </div>
-
-          <Link
-            href={`tel:+${ride.initiatedBy.phone}`}
-            className="bg-secondary/20 p-3 flex w-fit rounded-full"
-          >
-            <Phone size={20} color="#ffb700" />
-          </Link>
-        </div>
-        <hr className="mx-2 border-gray-500 mt-3" />
-        <span className="flex items-center py-2 justify-between">
-          <p className="text-[#8B8B8B]">Your earning</p>
-          <PriceFormat className="text-white" amount={Number(ride.price)} />
-        </span>
-
-        <div className="flex flex-col gap-5">
-          <SwitchRideState
-            text="On my way"
-            checked={checked}
-            handleStatusChange={handleStatusChange}
-            id="on_my_way"
-          />
-          <SwitchRideState
-            text="Arrived"
-            checked={checked}
-            handleStatusChange={handleStatusChange}
-            id="at_pickup"
-          />
-
-          <SwitchRideState
-            text="Trip in progress"
-            checked={checked}
-            handleStatusChange={handleStatusChange}
-            id="in_progress"
-          />
-          <SwitchRideState
-            text="Ride Completed"
-            checked={checked}
-            handleStatusChange={handleStatusChange}
-            id="ride_completed"
-          />
-        </div>
-
-        <Button
-          className={"h-10 mt-6 text-black w-full bg-secondary rounded-lg"}
-        >
-          Open in Google maps
-        </Button>
-      </div>
+      <RideDetails handleStatusChange={handleStatusChange} ride={ride} rideStatus={rideStatus} />
     </div>
   );
 }
