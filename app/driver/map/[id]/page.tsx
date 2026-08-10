@@ -20,15 +20,8 @@ import { Switch } from "@/app/Components/ui/Switch";
 import SwitchRideState from "@/app/Components/SwitchRideState";
 import { Button } from "@heroui/react";
 import Link from "next/link";
-import { Ride } from "@/types";
+import { Location, Ride } from "@/types";
 import RideDetails from "@/app/Components/RideDetails";
-
-interface Location {
-  lat: number;
-  lng: number;
-  accuracy?: number;
-}
-
 
 
 const containerStyle = {
@@ -46,7 +39,9 @@ export default function DriverMapPage() {
   const [driverLocation, setDriverLocation] = useState<Location | null>(null);
   const [loading, setLoading] = useState(true);
   const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [rideStatus, setRideStatus] = useState<string | null>(null);
+  const [rideStatus, setRideStatus] = useState<string | null>(
+    ride?.status ?? null,
+  );
   const [directions, setDirections] =
     useState<google.maps.DirectionsResult | null>(null);
 
@@ -305,10 +300,29 @@ export default function DriverMapPage() {
 
   const mapCenter = pickup;
 
-  const handleStatusChange = (checked: boolean, id: string) => {
-    if (checked) {
-      setRideStatus(id);
-      console.log("status changed", id);
+  const handleStatusChange = async (checked: boolean, id: string) => {
+    if (!checked) return;
+    try {
+      const url =
+        `${process.env.NEXT_PUBLIC_API_URL}` + `/api/ride/${ride._id}/status`;
+      if (checked) {
+        setRideStatus(id);
+        const res = await fetch(url, {
+          method: "PATCH",
+          body: JSON.stringify({ status: id }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        console.log(url);
+        console.log(id);
+        const data = await res.json();
+        console.log(data);
+
+        console.log("status changed", id);
+      }
+    } catch (err) {
+      console.log("something went wrong", err);
     }
   };
   return (
@@ -363,7 +377,11 @@ export default function DriverMapPage() {
         {driverLocation && <MarkerF position={driverLocation} label="🚗" />}
       </GoogleMap>
 
-      <RideDetails handleStatusChange={handleStatusChange} ride={ride} rideStatus={rideStatus} />
+      <RideDetails
+        handleStatusChange={handleStatusChange}
+        ride={ride}
+        rideStatus={rideStatus}
+      />
     </div>
   );
 }

@@ -4,7 +4,6 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
   size?: number;
 };
 
-
 export interface Ride {
   _id: string;
   initiatedBy: {
@@ -12,6 +11,8 @@ export interface Ride {
     lastName: string;
     phone: string;
   };
+  status: string;
+  rideProgress: string[];
   price: string;
   pickup: {
     name: string;
@@ -28,4 +29,11 @@ export interface Ride {
       coordinates: [number, number];
     };
   };
+}
+
+
+export interface Location {
+  lat: number;
+  lng: number;
+  accuracy?: number;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Ride } from "@/types";
+import { Location, Ride } from "@/types";
 import { motion, PanInfo } from "framer-motion";
 import { MapPin, Phone } from "lucide-react";
 import Link from "next/link";
@@ -21,6 +21,7 @@ export default function RideDetails({
   rideStatus,
 }: Props) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const rideProgress = ride?.rideProgress;
 
   const handleDragEnd = (
     _: MouseEvent | TouchEvent | PointerEvent,
@@ -29,18 +30,30 @@ export default function RideDetails({
     const offset = info.offset.y;
     const velocity = info.velocity.y;
 
-    // Swipe UP
     if (offset < -80 || velocity < -500) {
       setIsExpanded(true);
       return;
     }
 
-    // Swipe DOWN
     if (offset > 80 || velocity > 500) {
       setIsExpanded(false);
       return;
     }
   };
+
+  const pickup: Location | null = ride
+    ? {
+        lat: ride.pickup.location.coordinates[1],
+        lng: ride.pickup.location.coordinates[0],
+      }
+    : null;
+
+  const dropoff: Location | null = ride
+    ? {
+        lat: ride.dropoff.location.coordinates[1],
+        lng: ride.dropoff.location.coordinates[0],
+      }
+    : null;
 
   return (
     <motion.div
@@ -124,6 +137,7 @@ export default function RideDetails({
           checked={rideStatus === "on_my_way"}
           handleStatusChange={handleStatusChange}
           id="on_my_way"
+          rideProgress={rideProgress}
         />
 
         <SwitchRideState
@@ -131,6 +145,7 @@ export default function RideDetails({
           checked={rideStatus === "at_pickup"}
           handleStatusChange={handleStatusChange}
           id="at_pickup"
+          rideProgress={rideProgress}
         />
 
         <SwitchRideState
@@ -138,6 +153,7 @@ export default function RideDetails({
           checked={rideStatus === "in_progress"}
           handleStatusChange={handleStatusChange}
           id="in_progress"
+          rideProgress={rideProgress}
         />
 
         <SwitchRideState
@@ -145,12 +161,18 @@ export default function RideDetails({
           checked={rideStatus === "ride_completed"}
           handleStatusChange={handleStatusChange}
           id="ride_completed"
+          rideProgress={rideProgress}
         />
       </div>
 
-      <Button className="mt-6 h-10 w-full rounded-lg bg-secondary text-black">
-        Open in Google maps
-      </Button>
+      <Link
+        href={`https://www.google.com/maps/dir/?api=1&origin=<${pickup?.lat},${pickup?.lng}&destination=${dropoff?.lat},${dropoff?.lng}
+`}
+      >
+        <Button className="mt-6 h-10 w-full rounded-lg bg-secondary text-black">
+          Open in Google maps
+        </Button>
+      </Link>
     </motion.div>
   );
 }

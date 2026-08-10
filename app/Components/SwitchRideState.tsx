@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import { Switch } from "./ui/Switch";
 
 interface Props {
@@ -6,6 +7,7 @@ interface Props {
   text: string;
   checked: boolean;
   id: string;
+  rideProgress: string[];
 }
 
 export default function SwitchRideState({
@@ -13,13 +15,22 @@ export default function SwitchRideState({
   text,
   id,
   checked,
+  rideProgress,
 }: Props) {
+  const isStatusExisting = rideProgress?.includes(id) ?? false;
+
+
   return (
     <div className="flex items-center justify-between">
-      <p className="text-white">{text}</p>
+      <p
+        className={`${isStatusExisting ? "text-gray-400 font-medium" : "text-white"}`}
+      >
+        {text}
+      </p>
 
       <Switch
-        checked={checked}
+        checked={checked || isStatusExisting}
+        disabled={isStatusExisting}
         onCheckedChange={(value) => handleStatusChange(value, id)}
       />
     </div>
