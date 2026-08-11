@@ -72,13 +72,13 @@ export default function RideDetails({
         stiffness: 500,
         damping: 35,
       }}
-      className="absolute bottom-0 left-0 right-0 z-50 h-[60vh] w-full rounded-t-2xl bg-primary px-6 py-3 shadow-lg"
+      className="absolute bottom-0 left-0 right-0 z-50 h-fit w-full rounded-t-2xl bg-primary px-4 py-3 shadow-lg"
     >
       <div className="mx-auto mb-4 h-2 w-13 cursor-grab rounded-full bg-white active:cursor-grabbing" />
 
       <div className="flex items-center gap-4">
         <span className="flex w-fit rounded-full bg-secondary/20 p-3">
-          <MapPin size={28} color="#ffb700" />
+          <MapPin size={23} color="#ffb700" />
         </span>
 
         <span>
@@ -92,7 +92,7 @@ export default function RideDetails({
 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <span className="flex w-fit rounded-full bg-secondary p-3">
+          <span className="flex w-fit rounded-full bg-secondary p-2">
             <strong>
               {ride.initiatedBy?.firstName?.[0]?.toUpperCase()}
               {ride.initiatedBy?.lastName?.[0]?.toUpperCase()}
@@ -118,13 +118,13 @@ export default function RideDetails({
           href={`tel:+${ride.initiatedBy.phone}`}
           className="flex w-fit rounded-full bg-secondary/20 p-3"
         >
-          <Phone size={20} color="#ffb700" />
+          <Phone size={18} color="#ffb700" />
         </Link>
       </div>
 
       <hr className="mx-2 mt-3 border-gray-500" />
 
-      <span className="flex items-center justify-between py-2">
+      <span className="flex items-center justify-between py-3">
         <p className="text-[#8B8B8B]">Your earning</p>
 
         <PriceFormat className="text-white" amount={Number(ride.price)} />

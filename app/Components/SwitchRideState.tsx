@@ -23,7 +23,7 @@ export default function SwitchRideState({
   return (
     <div className="flex items-center justify-between">
       <p
-        className={`${isStatusExisting ? "text-gray-400 font-medium" : "text-white"}`}
+        className={`text-sm ${isStatusExisting ? "text-gray-400 font-medium" : "text-white"}`}
       >
         {text}
       </p>

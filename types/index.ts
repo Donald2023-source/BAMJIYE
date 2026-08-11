@@ -11,6 +11,10 @@ export interface Ride {
     lastName: string;
     phone: string;
   };
+  location: {
+    lat: number;
+    lng: number;
+  };
   status: string;
   rideProgress: string[];
   price: string;
@@ -30,7 +34,6 @@ export interface Ride {
     };
   };
 }
-
 
 export interface Location {
   lat: number;
