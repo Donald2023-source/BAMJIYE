@@ -23,7 +23,6 @@ import Link from "next/link";
 import { Location, Ride } from "@/types";
 import RideDetails from "@/app/Components/RideDetails";
 
-
 const containerStyle = {
   width: "100%",
   height: "100vh",
@@ -94,17 +93,8 @@ export default function DriverMapPage() {
     };
 
     getActiveRide();
-  }, [driverId]);
+  }, [driverId, rideStatus]);
 
-  /*
-   * Convert pickup/dropoff coordinates
-   *
-   * MongoDB GeoJSON:
-   * [lng, lat]
-   *
-   * Google Maps:
-   * { lat, lng }
-   */
   const pickup: Location | null = ride
     ? {
         lat: ride.pickup.location.coordinates[1],
@@ -119,9 +109,7 @@ export default function DriverMapPage() {
       }
     : null;
 
-  /*
-   * Get driving directions
-   */
+
   useEffect(() => {
     if (!isLoaded || !pickup || !dropoff) {
       return;
@@ -188,18 +176,12 @@ export default function DriverMapPage() {
           accuracy,
         });
 
-        /*
-         * Update driver marker
-         */
         setDriverLocation({
           lat,
           lng,
           accuracy,
         });
 
-        /*
-         * Keep map centered on driver
-         */
         if (map) {
           map.panTo({
             lat,
@@ -207,9 +189,6 @@ export default function DriverMapPage() {
           });
         }
 
-        /*
-         * Send location to backend
-         */
         socket.emit("driver:location", {
           driverId,
           rideId: ride._id,
@@ -237,27 +216,18 @@ export default function DriverMapPage() {
     };
   }, [ride?._id, driverId, map]);
 
-  /*
-   * Map loaded
-   */
   const onLoad = useCallback((mapInstance: google.maps.Map) => {
     console.log("🗺️ Google Map loaded");
 
     setMap(mapInstance);
   }, []);
 
-  /*
-   * Map unmounted
-   */
   const onUnmount = useCallback(() => {
     console.log("🗺️ Google Map unmounted");
 
     setMap(null);
   }, []);
 
-  /*
-   * Loading ride
-   */
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -266,9 +236,6 @@ export default function DriverMapPage() {
     );
   }
 
-  /*
-   * Google Maps loading error
-   */
   if (loadError) {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -277,9 +244,6 @@ export default function DriverMapPage() {
     );
   }
 
-  /*
-   * Loading Google Maps
-   */
   if (!isLoaded) {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -318,6 +282,7 @@ export default function DriverMapPage() {
         console.log(id);
         const data = await res.json();
         console.log(data);
+  
 
         console.log("status changed", id);
       }
@@ -374,7 +339,16 @@ export default function DriverMapPage() {
           />
         )}
 
-        {driverLocation && <MarkerF position={driverLocation} label="🚗" />}
+        {driverLocation && (
+          <OverlayViewF
+            position={driverLocation}
+            mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+          >
+            <div className="flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-primary text-xl shadow-lg">
+              🚗
+            </div>
+          </OverlayViewF>
+        )}
       </GoogleMap>
 
       <RideDetails

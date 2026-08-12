@@ -11,6 +11,13 @@ export interface Ride {
     lastName: string;
     phone: string;
   };
+
+  currentDriver: {
+    fullName: string;
+    profile_photo: string;
+    phone: string;
+    plate_number: string;
+  };
   location: {
     lat: number;
     lng: number;

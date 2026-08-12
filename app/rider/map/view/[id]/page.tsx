@@ -1,5 +1,7 @@
 "use client";
+import NameNotch from "@/app/Components/nameNotch";
 import RideMap from "@/app/Components/RideMap";
+import RideDetails from "@/app/rider/components/RideDetails";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -11,14 +13,16 @@ export default function ViewMap() {
     };
   }
   const rideId = useParams()?.id;
-  // console.log("Ride Id", rideId);
+
   const [driverLocation, setDriverLocation] = useState<driverLocation | null>(
     null,
   );
 
   return (
-    <>
+    <div className="relative">
+      <NameNotch />
       <RideMap rideId={rideId?.toString() ?? ""} />
-    </>
+      <RideDetails rideId={rideId?.toString() ?? ""} />
+    </div>
   );
 }

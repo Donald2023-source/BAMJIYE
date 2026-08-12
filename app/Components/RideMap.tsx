@@ -36,7 +36,6 @@ export default function RiderMap({ rideId }: RiderMapProps) {
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
   });
 
-
   useEffect(() => {
     if (!rideId) {
       setLoading(false);
@@ -81,7 +80,6 @@ export default function RiderMap({ rideId }: RiderMapProps) {
     getRide();
   }, [rideId]);
 
-
   const pickup: Location | null = ride
     ? {
         lat: ride.pickup.location.coordinates[1],
@@ -96,8 +94,6 @@ export default function RiderMap({ rideId }: RiderMapProps) {
       }
     : null;
 
-
-
   useEffect(() => {
     if (!rideId) return;
 
@@ -107,7 +103,6 @@ export default function RiderMap({ rideId }: RiderMapProps) {
       rideId,
     });
 
- 
     const handleDriverLocation = (data: {
       lat: number;
       lng: number;
@@ -134,8 +129,6 @@ export default function RiderMap({ rideId }: RiderMapProps) {
       });
     };
   }, [rideId]);
-
-
 
   useEffect(() => {
     if (!isLoaded || !pickup || !dropoff) {
@@ -207,8 +200,6 @@ export default function RiderMap({ rideId }: RiderMapProps) {
     );
   }
 
-
-
   console.log("Driver Location", driverLocation);
   return (
     <div className="relative h-screen w-full">
@@ -235,7 +226,6 @@ export default function RiderMap({ rideId }: RiderMapProps) {
           </OverlayViewF>
         </MarkerF>
 
-        {/* DROPOFF */}
         <MarkerF position={dropoff}>
           <OverlayViewF
             position={dropoff}
@@ -247,21 +237,29 @@ export default function RiderMap({ rideId }: RiderMapProps) {
           </OverlayViewF>
         </MarkerF>
 
-        {/* ROUTE */}
         {directions && (
           <DirectionsRenderer
             directions={directions}
             options={{
-              suppressMarkers: true,
               polylineOptions: {
-                strokeWeight: 5,
+                strokeColor: "#002b5c",
+                  strokeWeight: 5,
               },
+              suppressMarkers: true,
             }}
           />
         )}
 
-  
-        {driverLocation && <MarkerF position={driverLocation} label="🚗" />}
+        {driverLocation && (
+          <OverlayViewF
+            position={driverLocation}
+            mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+          >
+            <div className="flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-primary text-xl shadow-lg">
+              🚗
+            </div>
+          </OverlayViewF>
+        )}
       </GoogleMap>
     </div>
   );

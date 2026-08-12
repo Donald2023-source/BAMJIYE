@@ -11,10 +11,13 @@
 	},
 	"dependencies": {
 		"@base-ui/react": "^1.7.0",
+		"@emotion/react": "^11.14.0",
+		"@emotion/styled": "^11.14.1",
 		"@googlemaps/js-api-loader": "^2.1.1",
 		"@heroui/react": "3.1.0",
 		"@heroui/styles": "3.1.0",
 		"@hookform/resolvers": "^5.4.0",
+		"@mui/material": "^9.3.1",
 		"@react-google-maps/api": "^2.20.8",
 		"@vis.gl/react-google-maps": "^1.9.0",
 		"axios": "^1.19.0",
