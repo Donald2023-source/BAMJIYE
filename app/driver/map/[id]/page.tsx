@@ -22,6 +22,7 @@ import { Button } from "@heroui/react";
 import Link from "next/link";
 import { Location, Ride } from "@/types";
 import RideDetails from "@/app/Components/RideDetails";
+import NameNotch from "@/app/Components/nameNotch";
 
 const containerStyle = {
   width: "100%",
@@ -108,7 +109,6 @@ export default function DriverMapPage() {
         lng: ride.dropoff.location.coordinates[0],
       }
     : null;
-
 
   useEffect(() => {
     if (!isLoaded || !pickup || !dropoff) {
@@ -282,7 +282,6 @@ export default function DriverMapPage() {
         console.log(id);
         const data = await res.json();
         console.log(data);
-  
 
         console.log("status changed", id);
       }
@@ -292,6 +291,7 @@ export default function DriverMapPage() {
   };
   return (
     <div className="relative h-screen w-full">
+      <NameNotch name={ride?.initiatedBy?.firstName} />
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={mapCenter}
