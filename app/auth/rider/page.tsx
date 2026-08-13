@@ -62,7 +62,7 @@ export default function Page() {
       }
       console.log(newRes);
     } catch (err: any | unknown) {
-      console.error(err?.response?.data?.message, "Something went wrong");
+      console.error(err?.response, "Something went wrong");
       setLoading(false);
     } finally {
       setLoading(false);
