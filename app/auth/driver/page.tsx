@@ -116,6 +116,7 @@ export default function Page() {
                   {...register("email")}
                   className="bg-[#F7F7F7] p-3 rounded-xl outline-none border border-gray-200"
                   placeholder="Jude@gmail.com"
+                  type="email"
                 />
                 {errors.email && (
                   <p className="text-red-500 text-xs">{errors.email.message}</p>
