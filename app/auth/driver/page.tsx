@@ -41,13 +41,13 @@ export default function Page() {
   const router = useRouter();
 
   const onSubmit = async (data: FormData) => {
-    console.log(data);
+    // console.log(data);
     try {
       setLoading(true);
       const res = await axiosInstance.post("/api/auth/driver", data);
 
       const driver = await res.data;
-      console.log(driver);
+      // console.log(driver);
       if (res?.status === 200) {
         toast.success("Registeration Successful!", {
           description: "Welcome to  Bamjiye! 🎉",
