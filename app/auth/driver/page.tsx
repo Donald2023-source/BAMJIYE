@@ -47,23 +47,20 @@ export default function Page() {
       const res = await axiosInstance.post("/api/auth/driver", data);
 
       const driver = await res.data;
-      // console.log(driver);
-      if (res?.status === 200) {
+
+      if (res?.status === 201) {
         toast.success("Registeration Successful!", {
           description: "Welcome to  Bamjiye! 🎉",
         });
 
-        localStorage.setItem("driverId", driver?.user?.id);
+        localStorage.setItem("driverId", driver?.data?.user?.id);
         router.push("/auth/driver/upload-documents");
         console.log(driver);
         return setLoading(true);
       }
       console.log(driver?.message);
     } catch (error: any | unknown) {
-      console.log(
-        "Error creating driver account:",
-        error?.response?.data?.message,
-      );
+      console.log("Error creating driver account:", error?.response);
 
       toast.danger("Registration Failed!", {
         description: "Please try again.",

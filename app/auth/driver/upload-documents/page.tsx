@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import axiosInstance from "@/config/axiosInstance";
 import { useRouter } from "next/navigation";
 import { toast } from "@heroui/react";
+import axios from "axios";
 export default function Page() {
   const [loading, setLoading] = useState(false);
   const [driver, setDriver] = useState("");
@@ -22,9 +23,6 @@ export default function Page() {
     }
   }, []);
 
-  console.log(driver);
-  console.log(nin);
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -32,6 +30,7 @@ export default function Page() {
       setLoading(true);
 
       const formData = new FormData(e.currentTarget);
+      console.log("driver Id in he form ", driver);
 
       formData.append("driverId", driver);
 
@@ -54,24 +53,28 @@ export default function Page() {
         profilePhoto,
       });
 
-      const response = await axiosInstance.patch(
-        "/api/auth/upload-documents",
+      const response = await axios.patch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/driver/upload-credentials`,
         formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
       );
-
       const data = await response.data;
 
       console.log(data);
 
-      if (data.status === 200) {
-        // toast.success("Documents uploaded successfully");
+      if (data.success) {
         toast.success("Files uploaded Successfully!", {
           description: "Weldone! 🎉",
         });
         router.push("/auth/success");
       }
     } catch (err) {
-      console.log(err);
+      const error = err as any;
+      console.log("There was an error here", error?.response);
     } finally {
       setLoading(false);
     }
