@@ -71,6 +71,8 @@ export default function Page() {
           description: "Weldone! 🎉",
         });
         router.push("/auth/success");
+      } else {
+        toast.warning(data?.message);
       }
     } catch (err) {
       const error = err as any;
