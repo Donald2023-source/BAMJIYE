@@ -76,7 +76,6 @@ export default function BusinessOwnerForm() {
         });
 
         console.log(newRes?.message);
-
         return setLoading(false);
       }
       console.log(newRes);
