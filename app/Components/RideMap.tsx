@@ -121,7 +121,7 @@ export default function RiderMap({ rideId }: RiderMapProps) {
     socket.on("driver:location", handleDriverLocation);
 
     return () => {
-      console.log("👤 Rider leaving ride:", rideId);
+      console.log("Rider leaving ride:", rideId);
 
       socket.off("driver:location", handleDriverLocation);
 

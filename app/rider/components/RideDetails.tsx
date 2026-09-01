@@ -11,6 +11,7 @@ import { Button } from "@heroui/react";
 import Image from "next/image";
 import VerticalLinearStepper from "./Stepper";
 import { socket } from "@/lib/socket";
+import axios from "axios";
 
 interface Props {
   rideId: string;
@@ -51,6 +52,7 @@ export default function RideDetails({ rideId }: Props) {
     }
   };
 
+
   useEffect(() => {
     if (!rideId) return;
 
@@ -82,11 +84,11 @@ export default function RideDetails({ rideId }: Props) {
 
     const handleRideStatus = () => {
       console.log("Ride status changed — refreshing ride");
-
       getRide();
     };
 
     socket.on("ride:status", handleRideStatus);
+    
 
     return () => {
       socket.emit("ride:leave", rideId);
