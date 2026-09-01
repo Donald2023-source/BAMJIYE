@@ -7,6 +7,7 @@ import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import { StepIconProps } from "@mui/material/StepIcon";
 import { Ride } from "@/types";
+import axios from "axios";
 
 const steps = [
   {
@@ -65,6 +66,33 @@ export default function VerticalLinearStepper({ ride }: { ride: Ride }) {
   const currentStepName = currentStep?.name ?? "Not started";
 
   const activeStep = steps.findIndex((step) => step.id === currentProgress);
+
+  const completeRide = async () => {
+    try {
+      const response = await axios.patch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/ride/${ride._id}/status`,
+        {
+          status: "ride_completed",
+        },
+      );
+
+      console.log("✅ Ride completed:", response.data);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error(
+          "❌ Failed to complete ride:",
+          error.response?.data || error.message,
+        );
+      } else {
+        console.error("❌ Failed to complete ride:", error);
+      }
+    }
+  };
+  React.useEffect(() => {
+    if (currentStep?.id === "ride_completed") {
+      completeRide();
+    }
+  }, [currentStep?.id]);
 
   return (
     <Box sx={{ maxWidth: 400 }}>
