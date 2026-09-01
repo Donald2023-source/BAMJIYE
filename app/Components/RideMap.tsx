@@ -12,6 +12,7 @@ import {
 
 import { socket } from "@/lib/socket";
 import { Location, Ride } from "@/types";
+import RideDetails from "../rider/components/RideDetails";
 
 const containerStyle = {
   width: "100%",
@@ -243,7 +244,7 @@ export default function RiderMap({ rideId }: RiderMapProps) {
             options={{
               polylineOptions: {
                 strokeColor: "#002b5c",
-                  strokeWeight: 5,
+                strokeWeight: 5,
               },
               suppressMarkers: true,
             }}
@@ -261,6 +262,7 @@ export default function RiderMap({ rideId }: RiderMapProps) {
           </OverlayViewF>
         )}
       </GoogleMap>
+      <RideDetails rideId={rideId?.toString() ?? ""} />
     </div>
   );
 }

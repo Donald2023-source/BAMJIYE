@@ -10,6 +10,11 @@ import { Navbar } from "@/components/navbar";
 import localFont from "next/font/local";
 import NextTopLoader from "nextjs-toploader";
 import { Toast } from "@heroui/react";
+import { Figtree } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const figtree = Figtree({subsets:['latin'],variable:'--font-sans'});
+
 const creato_display = localFont({
   src: [
     {
@@ -56,7 +61,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html suppressHydrationWarning lang="en">
+    <html suppressHydrationWarning lang="en" className={cn("font-sans", figtree.variable)}>
       <head />
       <body className={`${creato_display.className} antialiased`}>
         <Providers themeProps={{ attribute: "class", defaultTheme: "light" }}>

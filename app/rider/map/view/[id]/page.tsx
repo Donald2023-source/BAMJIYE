@@ -49,7 +49,7 @@ export default function ViewMap() {
     <div className="relative">
       <NameNotch name={ride?.currentDriver?.fullName.toUpperCase()?? ""} />
       <RideMap rideId={rideId?.toString() ?? ""} />
-      <RideDetails rideId={rideId?.toString() ?? ""} />
+   
     </div>
   );
 }
