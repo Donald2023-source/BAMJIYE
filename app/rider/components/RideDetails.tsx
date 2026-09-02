@@ -139,7 +139,7 @@ export default function RideDetails({ rideId }: Props) {
           </div>
 
           <Link
-            href={`tel:+${ride?.initiatedBy?.phone}`}
+            href={`tel:+${ride?.currentDriver?.phone}`}
             className="flex w-fit rounded-full bg-secondary/20 p-3"
           >
             <Phone size={18} color="#ffb700" />
