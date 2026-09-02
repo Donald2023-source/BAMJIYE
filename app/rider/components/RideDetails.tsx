@@ -41,19 +41,16 @@ export default function RideDetails({ rideId }: Props) {
     const offset = info.offset.y;
     const velocity = info.velocity.y;
 
-    // Drag UP → expand
     if (offset < -50 || velocity < -300) {
       setIsExpanded(false);
       return;
     }
 
-    // Drag DOWN → collapse
     if (offset > 50 || velocity > 300) {
       setIsExpanded(true);
       return;
     }
 
-    // Otherwise keep the current position
     setIsExpanded((prev) => prev);
   };
 
@@ -149,8 +146,10 @@ export default function RideDetails({ rideId }: Props) {
           </Link>
         </div>
         <div className="flex items-center px-1 mt-3 justify-between text-sm text-white">
-          <p className="text-[#8B8B8B] font-medium">Estimated arrival</p>
-          <p>{"4"} min</p>
+          <p className="text-[#8B8B8B] font-medium">Fare</p>
+          <p>
+            <PriceFormat amount={Number(ride?.price) || 0} />
+          </p>
         </div>
 
         <hr className="mx-2 mt-3 border-gray-500" />
