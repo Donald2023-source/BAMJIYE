@@ -52,7 +52,6 @@ export default function RideDetails({ rideId }: Props) {
     }
   };
 
-
   useEffect(() => {
     if (!rideId) return;
 
@@ -88,7 +87,6 @@ export default function RideDetails({ rideId }: Props) {
     };
 
     socket.on("ride:status", handleRideStatus);
-    
 
     return () => {
       socket.emit("ride:leave", rideId);
@@ -119,13 +117,13 @@ export default function RideDetails({ rideId }: Props) {
       <div>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <span className="flex w-15 border h-15 rounded-full p-2">
+            <span className="flex w-15 border border-gray-800 h-15 rounded-full ">
               <Image
                 width={500}
                 height={500}
                 src={ride?.currentDriver?.profile_photo ?? ""}
                 alt="profile image"
-                className="w-full h-full object-contain"
+                className="w-full h-full rounded-full object-cover"
               />
             </span>
             <span>
