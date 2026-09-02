@@ -42,7 +42,6 @@ export default function RideDetails({
       return;
     }
 
-  
     setIsExpanded((prev) => prev);
   };
 
