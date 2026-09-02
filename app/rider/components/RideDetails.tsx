@@ -41,15 +41,20 @@ export default function RideDetails({ rideId }: Props) {
     const offset = info.offset.y;
     const velocity = info.velocity.y;
 
-    if (offset < -80 || velocity < -500) {
+    // Drag UP → expand
+    if (offset < -50 || velocity < -300) {
+      setIsExpanded(false);
+      return;
+    }
+
+    // Drag DOWN → collapse
+    if (offset > 50 || velocity > 300) {
       setIsExpanded(true);
       return;
     }
 
-    if (offset > 80 || velocity > 500) {
-      setIsExpanded(false);
-      return;
-    }
+    // Otherwise keep the current position
+    setIsExpanded((prev) => prev);
   };
 
   useEffect(() => {
@@ -96,19 +101,18 @@ export default function RideDetails({ rideId }: Props) {
   return (
     <motion.div
       drag="y"
-      dragConstraints={{
-        top: 300,
-        bottom: 0,
-      }}
-      dragElastic={0.5}
+      dragConstraints={{ top: 0, bottom: 300 }}
+      dragElastic={0.05}
+      dragMomentum={false}
       onDragEnd={handleDragEnd}
       animate={{
         y: isExpanded ? 300 : 0,
       }}
       transition={{
         type: "spring",
-        stiffness: 500,
+        stiffness: 400,
         damping: 35,
+        mass: 0.8,
       }}
       className="absolute bottom-0 left-0 right-0 z-50 h-fit w-full rounded-t-2xl bg-primary px-4 py-3 shadow-lg"
     >
