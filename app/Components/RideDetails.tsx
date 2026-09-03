@@ -104,15 +104,17 @@ export default function RideDetails({
 
           <span>
             <p className="py-1 font-semibold text-white">
-              {ride.initiatedBy.firstName[0].toUpperCase() +
-                ride.initiatedBy.firstName.slice(1, 6) +
-                " " +
-                ride.initiatedBy.lastName[0].toUpperCase() +
-                ride.initiatedBy.lastName.slice(1, 6)}
+              {ride?.initiatedBy?.firstName
+                ? ride.initiatedBy.firstName[0].toUpperCase() +
+                  ride.initiatedBy.firstName.slice(1, 6) +
+                  " " +
+                  ride.initiatedBy.lastName[0].toUpperCase() +
+                  ride.initiatedBy.lastName.slice(1, 6)
+                : (ride?.initiatedBy.businessName?.toUpperCase() ?? "Unknown")}
             </p>
 
             <p className="text-sm font-medium text-gray-400">
-              Passenger - {Number(ride.distance).toFixed(1)} km
+              Distance - {Number(ride.distance).toFixed(1)} km
             </p>
           </span>
         </div>
