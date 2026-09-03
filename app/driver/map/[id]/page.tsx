@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import {
   GoogleMap,
@@ -42,6 +42,7 @@ export default function DriverMapPage() {
   const [rideStatus, setRideStatus] = useState<string | null>(
     ride?.status ?? null,
   );
+  const mapInitialized = useRef(false);
   const [directions, setDirections] =
     useState<google.maps.DirectionsResult | null>(null);
 
@@ -158,7 +159,6 @@ export default function DriverMapPage() {
 
     if (!navigator.geolocation) {
       console.error("Geolocation is not supported");
-
       return;
     }
 
@@ -182,11 +182,14 @@ export default function DriverMapPage() {
           accuracy,
         });
 
-        if (map) {
-          map.panTo({
+        // 🎯 Center map ONLY on the first GPS location
+        if (map && !mapInitialized.current) {
+          map.setCenter({
             lat,
             lng,
           });
+
+          mapInitialized.current = true;
         }
 
         socket.emit("driver:location", {
@@ -197,11 +200,9 @@ export default function DriverMapPage() {
           accuracy,
         });
       },
-
       (error) => {
         console.error("❌ GPS error:", error);
       },
-
       {
         enableHighAccuracy: true,
         maximumAge: 3000,
@@ -211,11 +212,13 @@ export default function DriverMapPage() {
 
     return () => {
       console.log("🛑 Stopping GPS tracking");
-
       navigator.geolocation.clearWatch(watchId);
     };
   }, [ride?._id, driverId, map]);
 
+  useEffect(() => {
+    mapInitialized.current = false;
+  }, [ride?._id]);
   const onLoad = useCallback((mapInstance: google.maps.Map) => {
     console.log("🗺️ Google Map loaded");
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   GoogleMap,
   MarkerF,
@@ -200,14 +200,27 @@ export default function RiderMap({ rideId }: RiderMapProps) {
       </div>
     );
   }
+  const mapRef = useRef<google.maps.Map | null>(null);
+  const hasInitializedMap = useRef(false);
 
   console.log("Driver Location", driverLocation);
   return (
     <div className="relative h-screen w-full">
       <GoogleMap
         mapContainerStyle={containerStyle}
-        center={driverLocation ?? pickup}
+        center={pickup}
         zoom={15}
+        onLoad={(map) => {
+          mapRef.current = map;
+
+          if (!hasInitializedMap.current) {
+            map.setCenter(driverLocation ?? pickup);
+            hasInitializedMap.current = true;
+          }
+        }}
+        onUnmount={() => {
+          mapRef.current = null;
+        }}
         options={{
           streetViewControl: false,
           mapTypeControl: false,
