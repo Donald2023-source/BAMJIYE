@@ -10,6 +10,7 @@ export interface Ride {
     firstName: string;
     lastName: string;
     phone: string;
+    businessName: string;
   };
 
   currentDriver: {
