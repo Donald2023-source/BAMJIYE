@@ -291,7 +291,13 @@ export default function DriverMapPage() {
   };
   return (
     <div className="relative h-screen w-full">
-      <NameNotch name={ride?.initiatedBy?.firstName} />
+      <NameNotch
+        name={
+          ride?.initiatedBy?.firstName
+            ? ride?.initiatedBy?.firstName
+            : ride?.initiatedBy.businessName
+        }
+      />
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={mapCenter}
