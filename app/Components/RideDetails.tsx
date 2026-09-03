@@ -114,7 +114,7 @@ export default function RideDetails({
             </p>
 
             <p className="text-sm font-medium text-gray-400">
-              Passenger - {Number(ride.distance).toFixed(1)} km
+              Distance - {Number(ride.distance).toFixed(1)} km
             </p>
           </span>
         </div>
